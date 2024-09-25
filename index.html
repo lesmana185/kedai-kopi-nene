@@ -11,15 +11,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     <!-- Feather Icons -->
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://kit.fontawesome.com/afe8756d93.js" crossorigin="anonymous"></script>
 
     <!-- My Style -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- AlpineJs -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+   
+
 </head>
 <body>
     
 <!-- Navbar Start -->
- <nav class="navbar">
+ <nav class="navbar" x-data>
     <a href="#" class="navbar-logo">KedaiKopi<span>Nene</span>.</a>
     <div class="navbar-nav">
         <a href="#home">Home</a>
@@ -29,44 +35,64 @@
     </div>
 
     <div class="navbar-extra">
-        <a href="#" id="search-button"><i data-feather="search"></i></a>
-        <a href="#" id="shopping-cart-button"><i data-feather="shopping-cart"></i></a>
-        <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
+        <a href="#" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></a>
+        <a href="#" id="shopping-cart-button">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="quantity-badge" x-show="$store.cart.quantity" x-text="$store.cart.quantity"></span>
+        </a>
+        <a href="#" id="hamburger-menu"><i class="fa-solid fa-bars"></i></i></a>
     </div>
 <!-- Search Form start -->
     <div class="search-form">
         <input type="search" id="search-box" placeholder="search here...">
-        <label for="search-box"><i data-feather="search"></i></label>
+        <label for="search-box"><i class="fa-solid fa-magnifying-glass"></i></label>
     </div>
 <!-- Search Form end -->
 
 <!-- Shopping Cart Start -->
  <div class="shopping-cart">
-    <div class="cart-item">
-        <img src="img/menu/1.png" alt="Product 1">
-        <div class="detail-item">
-            <h3>Product 1</h3>
-            <div class="item-price">IDR 20K</div>
+    <template x-for="(item, index) in $store.cart.items" x-keys="index">
+        <div class="cart-item">
+            <img :src="`img/menu/${item.img}`" :alt="item.name">
+            <div class="detail-item">
+                <h3 x-text="item.name"></h3>
+                <div class="item-price">
+                    <span x-text="rupiah(item.price)"></span> &times;
+                    <button id="remove" @click="$store.cart.remove(item.id)">&minus;</button>
+                    <span x-text="item.quantity"></span>
+                    <button id="add" @click="$store.cart.add(item)">&plus;</button> &equals;
+                    <span x-text="rupiah(item.total)"></span>
+                </div>
+            </div>
         </div>
-        <i data-feather="trash-2" class="remove-item"></i>
+    </template>
+    <h4 x-show="$store.cart.quantity">Total : <span x-text="rupiah($store.cart.total)"></span></h4>
+    <h4 x-show="!$store.cart.quantity" style="margin-top: 1rem;">Masih Kosong Nehh <i class="fa-regular fa-face-frown"></i></h4>
+
+    <div class="form-container" x-show="$store.cart.quantity">
+        <form action="" id="checkoutForm">
+            <h5>Customer Detail</h5>
+
+            <label for="name">
+                <span>Name</span>
+                <input type="text" name="name" id="name">
+            </label>
+
+            <label for="email">
+                <span>Email</span>
+                <input type="email" name="email" id="email">
+            </label>
+
+            <label for="phone">
+                <span>Phone</span>
+                <input type="number" name="phone" id="phone" autocomplete="off">
+            </label>
+
+            <button class="checkout-button" id="checkout-button" type="submit" value="">Checkout</button>
+
+        </form>
     </div>
-    <div class="cart-item">
-        <img src="img/menu/1.png" alt="Product 1">
-        <div class="detail-item">
-            <h3>Product 1</h3>
-            <div class="item-price">IDR 20K</div>
-        </div>
-        <i data-feather="trash-2" class="remove-item"></i>
-    </div>
-    <div class="cart-item">
-        <img src="img/menu/1.png" alt="Product 1">
-        <div class="detail-item">
-            <h3>Product 1</h3>
-            <div class="item-price">IDR 20K</div>
-        </div>
-        <i data-feather="trash-2" class="remove-item"></i>
-    </div>
- </div>
+</div>
 <!-- Shopping Cart end -->
 
  </nav>
@@ -77,7 +103,7 @@
     <main class="content">
         <h1>Mari <span>Nikmati</span> Secangkir <span>Kopi</span></h1>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione nihil inventore porro totam.</p>
-        <a href="#" class="cta">Beli Sekarang</a>
+        <a href="#menu" class="cta">Beli Sekarang</a>
     </main>
  </section>
 <!-- Hero Section end -->
@@ -99,65 +125,22 @@
 <!-- About Section end -->
 
 <!-- Menu Section start -->
- <section id="menu" class="menu">
+ <section id="menu" class="menu" x-data="menu">
     <h2>Menu <span>Kami</span></h2>
     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae ipsam repudiandae quis eligendi accusantium? Provident!</p>
 
     <div class="row">
+    <template x-for="(item, index) in items" x-keys="index">
         <div class="menu-card">
             <div class="menu-icon">
-                <a href="#"><i data-feather="shopping-cart"></i></a>
-                <a href="#" class="item-detail-button"><i data-feather="eye"></i></a>
+                <a href="#" @click.prevent="$store.cart.add(item)"><i class="fa-solid fa-cart-shopping"></i></a>
+                <a href="#" class="item-detail-button"><i class="fa-solid fa-eye"></i></a>
             </div>
-            <img src="img/menu/1.png" alt="Caramel Iced Coffee" class="menu-card-img">
-            <h3 class="menu-card-tittle">-Caramel Iced Coffee-</h3>
-            <p class="menu-card-price">IDR 20K</p>
+            <img :src="`img/menu/${item.img}`" :alt="item.name" class="menu-card-img">
+            <h3 class="menu-card-tittle" x-text="item.name"></h3>
+            <p class="menu-card-price" x-text="rupiah(item.price)"></p>
         </div>
-        <div class="menu-card">
-            <div class="menu-icon">
-                <a href="#"><i data-feather="shopping-cart"></i></a>
-                <a href="#" class="item-detail-button"><i data-feather="eye"></i></a>
-            </div>
-            <img src="img/menu/1.png" alt="Caramel Iced Coffee" class="menu-card-img">
-            <h3 class="menu-card-tittle">-Caramel Iced Coffee-</h3>
-            <p class="menu-card-price">IDR 20K</p>
-        </div>
-        <div class="menu-card">
-            <div class="menu-icon">
-                <a href="#"><i data-feather="shopping-cart"></i></a>
-                <a href="#" class="item-detail-button"><i data-feather="eye"></i></a>
-            </div>
-            <img src="img/menu/1.png" alt="Caramel Iced Coffee" class="menu-card-img">
-            <h3 class="menu-card-tittle">-Caramel Iced Coffee-</h3>
-            <p class="menu-card-price">IDR 20K</p>
-        </div>
-        <div class="menu-card">
-            <div class="menu-icon">
-                <a href="#"><i data-feather="shopping-cart"></i></a>
-                <a href="#" class="item-detail-button"><i data-feather="eye"></i></a>
-            </div>
-            <img src="img/menu/1.png" alt="Caramel Iced Coffee" class="menu-card-img">
-            <h3 class="menu-card-tittle">-Caramel Iced Coffee-</h3>
-            <p class="menu-card-price">IDR 20K</p>
-        </div>
-        <div class="menu-card">
-            <div class="menu-icon">
-                <a href="#"><i data-feather="shopping-cart"></i></a>
-                <a href="#" class="item-detail-button"><i data-feather="eye"></i></a>
-            </div>
-            <img src="img/menu/1.png" alt="Caramel Iced Coffee" class="menu-card-img">
-            <h3 class="menu-card-tittle">-Caramel Iced Coffee-</h3>
-            <p class="menu-card-price">IDR 20K</p>
-        </div>
-        <div class="menu-card">
-            <div class="menu-icon">
-                <a href="#"><i data-feather="shopping-cart"></i></a>
-                <a href="#" class="item-detail-button"><i data-feather="eye"></i></a>
-            </div>
-            <img src="img/menu/1.png" alt="Caramel Iced Coffee" class="menu-card-img">
-            <h3 class="menu-card-tittle">-Caramel Iced Coffee-</h3>
-            <p class="menu-card-price">IDR 20K</p>
-        </div>
+    </template>
     </div>
  </section>
 <!-- Menu Section end -->
@@ -172,17 +155,17 @@
 
         <form action="">
             <div class="input-group">
-                <i data-feather="user"></i>
+                <i class="fa-solid fa-user"></i>
                 <input type="text"
                 placeholder="nama">
             </div>
             <div class="input-group">
-                <i data-feather="mail"></i>
+                <i class="fa-solid fa-envelope"></i>
                 <input type="email"
                 placeholder="email">
             </div>
             <div class="input-group">
-                <i data-feather="phone"></i>
+                <i class="fa-solid fa-phone"></i>
                 <input type="number"
                 placeholder="no hp">
             </div>
@@ -197,9 +180,9 @@
 <!-- Footer start -->
  <footer>
     <div class="socials">
-        <a href="#"><i data-feather="instagram"></i></a>
-        <a href="#"><i data-feather="youtube"></i></a>
-        <a href="#"><i data-feather="facebook"></i></a>
+        <a href="https://www.instagram.com/lexxshin07" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@ariellesmana07" target="_blank"><i class="fa-brands fa-tiktok"></i></i></a>
+        <!-- <a href="#"><i class="fa-brands fa-facebook"></i></a> -->
     </div>
     <div class="links">
         <a href="#home">Home</a>
@@ -220,7 +203,7 @@
         <div class="modal-content">
             <img src="img/menu/1.png" alt="product 1">
             <div class="product-content">
-                <h3>Product 1</h3>
+                <h3>Caramel Iced Coffee</h3>
                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex soluta similique, cupiditate, qui culpa perspiciatis earum fugiat labore unde facere, ab consequatur voluptatem.</p>
                 <div class="product-star">
                     <i data-feather="star" class="star-full"></i>
@@ -234,15 +217,34 @@
             </div>
         </div>
     </div>
+    <div class="modal-container">
+        <a href="#" class="close-icon"><i data-feather="x"></i></a>
+        <div class="modal-content">
+            <img src="img/menu/black coffee.jpg" alt="product 1">
+            <div class="product-content">
+                <h3>Black Cofee</h3>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex soluta similique, cupiditate, qui culpa perspiciatis earum fugiat labore unde facere, ab consequatur voluptatem.</p>
+                <div class="product-star">
+                    <i class="fa-regular fa-star" class="star-full"></i>
+                    <i class="fa-regular fa-star" class="star-full"></i>
+                    <i class="fa-regular fa-star" class="star-full"></i>
+                    <i class="fa-regular fa-star" class="star-full"></i>
+                    <i class="fa-regular fa-star"></i>
+                </div>
+                <div class="product-price">IDR 20K <span>IDR 45K</span></div>
+                <a href="#"><span>add to cart</span></a>
+            </div>
+        </div>
+    </div>
  </div>
 <!-- Modal Box Detail end -->
 
-<!-- Script Feather Icons -->
-<script>
-    feather.replace();
-  </script>
-
 <!-- My Script -->
  <script src="js/script.js"></script>
+
+
+
+  <!-- App -->
+  <script src="src/app.js"></script>
 </body>
 </html>
