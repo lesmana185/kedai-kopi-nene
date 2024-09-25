@@ -19,7 +19,8 @@
     <!-- AlpineJs -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-   
+    <!-- App -->
+    <script src="src/app.js"></script>
 
 </head>
 <body>
@@ -40,6 +41,7 @@
             <i class="fa-solid fa-cart-shopping"></i>
             <span class="quantity-badge" x-show="$store.cart.quantity" x-text="$store.cart.quantity"></span>
         </a>
+        
         <a href="#" id="hamburger-menu"><i class="fa-solid fa-bars"></i></i></a>
     </div>
 <!-- Search Form start -->
@@ -125,16 +127,15 @@
 <!-- About Section end -->
 
 <!-- Menu Section start -->
- <section id="menu" class="menu" x-data="menu">
+ <section id="menu" class="menu">
     <h2>Menu <span>Kami</span></h2>
     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae ipsam repudiandae quis eligendi accusantium? Provident!</p>
-
-    <div class="row">
-    <template x-for="(item, index) in items" x-keys="index">
-        <div class="menu-card">
-            <div class="menu-icon">
-                <a href="#" @click.prevent="$store.cart.add(item)"><i class="fa-solid fa-cart-shopping"></i></a>
-                <a href="#" class="item-detail-button"><i class="fa-solid fa-eye"></i></a>
+    <div class="row" x-data="menu">
+        <template x-for="(item, index) in items" x-keys="index">
+            <div class="menu-card">
+                <div class="menu-icon">
+                    <a href="#" @click.prevent="$store.cart.add(item)"><i class="fa-solid fa-cart-shopping"></i></a>
+                    <!-- <a href="#" class="item-detail-button"><i class="fa-solid fa-eye"></i></a> -->
             </div>
             <img :src="`img/menu/${item.img}`" :alt="item.name" class="menu-card-img">
             <h3 class="menu-card-tittle" x-text="item.name"></h3>
@@ -143,8 +144,8 @@
     </template>
     </div>
  </section>
-<!-- Menu Section end -->
 
+<!-- Menu Section end -->
 <!-- Contact Section start -->
  <section id="contact" class="contact">
     <h2><span>Kontak</span> Kami</h2>
@@ -199,7 +200,7 @@
 <!-- Modal Box Detail start -->
  <div class="modal" id="item-detail-modal">
     <div class="modal-container">
-        <a href="#" class="close-icon"><i data-feather="x"></i></a>
+        <a href="#" class="close-icon"><i class="fa-solid fa-x"></i></a>
         <div class="modal-content">
             <img src="img/menu/1.png" alt="product 1">
             <div class="product-content">
@@ -212,9 +213,6 @@
                     <i data-feather="star" class="star-full"></i>
                     <i data-feather="star"></i>
                 </div>
-                <div class="product-price">IDR 20K <span>IDR 45K</span></div>
-                <a href="#"><i data-feather="shopping-cart"></i><span>add to cart</span></a>
-            </div>
         </div>
     </div>
     <div class="modal-container">
@@ -231,9 +229,6 @@
                     <i class="fa-regular fa-star" class="star-full"></i>
                     <i class="fa-regular fa-star"></i>
                 </div>
-                <div class="product-price">IDR 20K <span>IDR 45K</span></div>
-                <a href="#"><span>add to cart</span></a>
-            </div>
         </div>
     </div>
  </div>
@@ -243,8 +238,5 @@
  <script src="js/script.js"></script>
 
 
-
-  <!-- App -->
-  <script src="src/app.js"></script>
 </body>
 </html>

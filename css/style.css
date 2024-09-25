@@ -76,6 +76,7 @@ body {
 .navbar .navbar-extra a{
     color: #fff;
     margin: 0 0.5rem;
+    font-size: 1.6rem;
 }
 
 .navbar .navbar-extra a:hover{
@@ -381,7 +382,6 @@ body {
     margin: .5rem;
     padding-top: 2rem;
     box-sizing: border-box;
-    cursor: pointer;
 }
 
 .menu .row .menu-card img {
@@ -409,6 +409,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 1.6rem;
 }
 
 .menu .row .menu-card .menu-icon a:hover {
@@ -435,6 +436,7 @@ body {
     flex: 1 1 45rem;
     padding: 5rem 2rem;
     text-align: center;
+    font-size: 1.6rem;
 }
 
 .contact .row form .input-group {
@@ -478,6 +480,7 @@ footer.socials {
 footer .socials a {
     color: #fff;
     margin: 1rem;
+    font-size: 1.6rem;
 }
 
 footer .socials a:hover,
